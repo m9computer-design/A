@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE1NONLY | Chat</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #080b0a;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.chat-container {
+    width: 100%;
+    max-width: 500px;
+    height: 95vh;
+    max-height: 750px;
+    background: #111714;
+    border: 1px solid #1c9b60;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 25px #00ff6620;
+}
+
+.header {
+    padding: 20px;
+    background: #101d16;
+    border-bottom: 1px solid #245a3c;
+}
+
+.header h2 {
+    margin: 0 0 8px;
+    color: #00ff88;
+}
+
+.status {
+    color: #8bffb7;
+    font-size: 12px;
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message {
+    max-width: 85%;
+    padding: 12px 15px;
+    border-radius: 12px;
+    overflow-wrap: anywhere;
+}
+
+.received {
+    align-self: flex-start;
+    background: #202a24;
+    border: 1px solid #34483b;
+}
+
+.sent {
+    align-self: flex-end;
+    background: #087c48;
+}
+
+.sender {
+    display: block;
+    font-size: 11px;
+    color: #a8ffc9;
+    margin-bottom: 5px;
+}
+
+.welcome {
+    text-align: center;
+    color: #81978a;
+    font-size: 13px;
+    margin: 10px 0;
+}
+
+.input-area {
+    display: flex;
+    gap: 8px;
+    padding: 14px;
+    background: #101d16;
+    border-top: 1px solid #245a3c;
+}
+
+input {
+    flex: 1;
+    min-width: 0;
+    padding: 13px;
+    border: 1px solid #315a40;
+    border-radius: 10px;
+    background: #080d0a;
+    color: white;
+    outline: none;
+}
+
+input:focus {
+    border-color: #00ff88;
+}
+
+button {
+    border: none;
+    padding: 0 18px;
+    border-radius: 10px;
+    background: #00d977;
+    color: #001b0c;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #63ffad;
+}
+
+.footer {
+    padding: 9px;
+    text-align: center;
+    color: #718478;
+    font-size: 11px;
+}
+
+@media (max-width: 500px) {
+    .chat-container {
+        height: 100vh;
+        max-height: none;
+        border-radius: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <header class="header">
+        <h2>THE1NONLY</h2>
+        <div class="status">● Chat Interface Ready</div>
+    </header>
+
+    <main class="messages" id="messages">
+        <div class="welcome">
+            Welcome to THE1NONLY Chat!
+        </div>
+
+        <div class="message received">
+            <span class="sender">SYSTEM</span>
+            Your chat interface is ready.
+        </div>
+    </main>
+
+    <form class="input-area" id="chatForm">
+        <input
+            type="text"
+            id="messageInput"
+            placeholder="Type a message..."
+            maxlength="1000"
+            autocomplete="off"
+            required
+        >
+
+        <button type="submit">SEND</button>
+    </form>
+
+    <footer class="footer">
+        THE1NONLY • Chat Demo
+    </footer>
+
+</div>
+
+<script>
+const form = document.getElementById("chatForm");
+const input = document.getElementById("messageInput");
+const messages = document.getElementById("messages");
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    const bubble = document.createElement("div");
+    bubble.className = "message sent";
+
+    const sender = document.createElement("span");
+    sender.className = "sender";
+    sender.textContent = "YOU";
+
+    const content = document.createElement("div");
+    content.textContent = text;
+
+    bubble.appendChild(sender);
+    bubble.appendChild(content);
+
+    messages.appendChild(bubble);
+
+    input.value = "";
+    messages.scrollTop = messages.scrollHeight;
+    input.focus();
+});
+</script>
+
+</body>
+  </html>
