@@ -218,5 +218,176 @@ form.addEventListener("submit", function(event) {
 });
 </script>
 
+<!-- CHAMPAK AI CHATBOT -->
+<style>
+  #champak-panel {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    width: min(360px, calc(100vw - 32px));
+    background: #07110b;
+    color: #00ff88;
+    border: 1px solid #00ff88;
+    border-radius: 14px;
+    font-family: monospace;
+    z-index: 99999;
+    box-shadow: 0 0 20px #00ff8833;
+    overflow: hidden;
+  }
+
+  #champak-header {
+    background: #0b2014;
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+  }
+
+  #champak-messages {
+    height: 280px;
+    overflow-y: auto;
+    padding: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .champak-message {
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  #champak-form {
+    display: flex;
+    border-top: 1px solid #00ff8855;
+  }
+
+  #champak-input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    background: #07110b;
+    color: white;
+    border: none;
+    outline: none;
+  }
+
+  #champak-form button {
+    background: #00ff88;
+    color: #001b0d;
+    border: none;
+    padding: 12px;
+    font-weight: bold;
+  }
+
+  #champak-toggle {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 99998;
+    padding: 14px 18px;
+    background: #00ff88;
+    color: #001b0d;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+  }
+
+  #champak-panel[hidden],
+  #champak-toggle[hidden] {
+    display: none;
+  }
+</style>
+
+<button id="champak-toggle" type="button">🤖 CHAMPAK AI</button>
+
+<section id="champak-panel" hidden>
+  <div id="champak-header">
+    <span>IRON MAN // CHAMPAK</span>
+    <button id="champak-close" type="button"
+      aria-label="Close chat">✕</button>
+  </div>
+
+  <div id="champak-messages" aria-live="polite">CHAMPAK: Online. Ask me anything!</div>
+
+  <form id="champak-form">
+    <input id="champak-input" placeholder="Message CHAMPAK..."
+      autocomplete="off" maxlength="4000" required>
+    <button id="champak-send" type="submit">SEND</button>
+  </form>
+</section>
+
+<script>
+(() => {
+  const BACKEND_URL = "https://a.m9computer.workers.dev/";
+
+  const panel = document.getElementById("champak-panel");
+  const toggle = document.getElementById("champak-toggle");
+  const close = document.getElementById("champak-close");
+  const form = document.getElementById("champak-form");
+  const input = document.getElementById("champak-input");
+  const messages = document.getElementById("champak-messages");
+  const send = document.getElementById("champak-send");
+
+  toggle.addEventListener("click", () => {
+    panel.hidden = false;
+    toggle.hidden = true;
+    input.focus();
+  });
+
+  close.addEventListener("click", () => {
+    panel.hidden = true;
+    toggle.hidden = false;
+  });
+
+  function addMessage(text) {
+    const item = document.createElement("div");
+    item.className = "champak-message";
+    item.textContent = text;
+    messages.appendChild(item);
+    messages.scrollTop = messages.scrollHeight;
+    return item;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const message = input.value.trim();
+    if (!message || send.disabled) return;
+
+    addMessage("YOU: " + message);
+    input.value = "";
+    send.disabled = true;
+    send.textContent = "...";
+
+    const reply = addMessage("CHAMPAK: Thinking...");
+
+    try {
+      const response = await fetch(BACKEND_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Server error " + response.status);
+      }
+
+      reply.textContent = "CHAMPAK: " +
+        (data.reply || "No response received.");
+    } catch (error) {
+      reply.textContent =
+        "CHAMPAK: Connection failed. Check the Worker code, API secret, and browser console. " +
+        (error.message || "");
+    } finally {
+      send.disabled = false;
+      send.textContent = "SEND";
+      messages.scrollTop = messages.scrollHeight;
+    }
+  });
+})();
+</script>
+
 </body>
   </html>
